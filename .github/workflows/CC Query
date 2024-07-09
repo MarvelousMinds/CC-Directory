@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monroe County Child Care Facilities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monroe County Child Care Facilities</h1>
+    <table id="facilityTable">
+        <thead>
+            <tr>
+                <th>Facility ID</th>
+                <th>Program Type</th>
+                <th>Facility Name</th>
+                <th>Phone Number</th>
+                <th>Provider Name</th>
+                <th>School District</th>
+                <th>Capacity Description</th>
+                <th>Infant Capacity</th>
+                <th>Toddler Capacity</th>
+                <th>Preschool Capacity</th>
+                <th>School Age Capacity</th>
+                <th>Total Capacity</th>
+                <th>Additional Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const url = "https://data.ny.gov/resource/cb42-qumz.json?$query=SELECT%0A%20%20%60facility_id%60%2C%0A%20%20%60program_type%60%2C%0A%20%20%60facility_name%60%2C%0A%20%20%60phone_number%60%2C%0A%20%20%60provider_name%60%2C%0A%20%20%60school_district_name%60%2C%0A%20%20%60capacity_description%60%2C%0A%20%20%60infant_capacity%60%2C%0A%20%20%60toddler_capacity%60%2C%0A%20%20%60preschool_capacity%60%2C%0A%20%20%60school_age_capacity%60%2C%0A%20%20%60total_capacity%60%2C%0A%20%20%60additional_information%60%0AWHERE%0A%20%20caseless_one_of(%60county%60%2C%20%22Monroe%22)%0A%20%20AND%20((%60phone_number%60%20IS%20NOT%20NULL)%0A%20%20%20%20%20%20%20%20%20AND%20((%60street_name%60%20IS%20NOT%20NULL)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20AND%20(%60additional_information%60%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%3D%20%60additional_information%60%20%3A%3A%20url)))";
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#facilityTable tbody');
+                    data.forEach(facility => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${facility.facility_id || ''}</td>
+                            <td>${facility.program_type || ''}</td>
+                            <td>${facility.facility_name || ''}</td>
+                            <td>${facility.phone_number || ''}</td>
+                            <td>${facility.provider_name || ''}</td>
+                            <td>${facility.school_district_name || ''}</td>
+                            <td>${facility.capacity_description || ''}</td>
+                            <td>${facility.infant_capacity || ''}</td>
+                            <td>${facility.toddler_capacity || ''}</td>
+                            <td>${facility.preschool_capacity || ''}</td>
+                            <td>${facility.school_age_capacity || ''}</td>
+                            <td>${facility.total_capacity || ''}</td>
+                            <td><a href="${facility.additional_information || '#'}">${facility.additional_information || ''}</a></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+</body>
+</html>
